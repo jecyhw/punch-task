@@ -31,17 +31,18 @@ public class TaskApplication {
 		SpringApplication.run(TaskApplication.class, args);
 	}
 
-
-
-	@Schedules( { @Scheduled(cron = "0 55 17 * * ?", zone = "Asia/Shanghai"), @Scheduled(cron = "0 10 7 * * ?", zone = "Asia/Shanghai") })
+	@Schedules( { @Scheduled(cron = "0 55 17 * * ?", zone = "Asia/Shanghai"), @Scheduled(cron = "0 41 9 * * ?", zone = "Asia/Shanghai") })
 	public void punchWorkTask() {
 		long end = System.currentTimeMillis() + 60 * 60 * 1000;
 		while (System.currentTimeMillis() < end) {
-			String result = restTemplate.getForObject("https://punch-cnic.herokuapp.com/health/check", String.class);
-			logger.info(result);
 			try {
+				try {
+					restTemplate.getForObject("https://punch-cnic.herokuapp.com/health/check", String.class);
+				} catch (Exception e) {
+					restTemplate.getForObject("https://punch-cnic-1.herokuapp.com/health/check", String.class);
+				}
 				Thread.sleep(1000 * 60 * 5);
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
